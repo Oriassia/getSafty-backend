@@ -1,13 +1,14 @@
 import { Router } from "express";
 import {
-    getAllRooms,
-    getRoomById,
-    addRoom,
-    updateRoom,
-    deleteRoom,
-    addToFavorites,
-    removeFromFavorites,
-    getUserRooms
+  getAllRooms,
+  getRoomById,
+  addRoom,
+  updateRoom,
+  deleteRoom,
+  addToFavorites,
+  removeFromFavorites,
+  getUserRooms,
+  getFavoritesByUser,
 } from "../controllers/rooms-controller";
 import { verifyToken } from "../middleware/auth-middleware";
 
@@ -22,6 +23,6 @@ roomsRoutes.post("/", verifyToken, addRoom);
 roomsRoutes.patch("/:id", verifyToken, updateRoom);
 roomsRoutes.delete("/:id", verifyToken, deleteRoom);
 roomsRoutes.get("/user/:userId", verifyToken, getUserRooms);
-
+roomsRoutes.get("/user/fav/:userId", getFavoritesByUser);
 roomsRoutes.post("/favorite/:roomId", verifyToken, addToFavorites);
 roomsRoutes.delete("/favorite/:roomId", verifyToken, removeFromFavorites);
