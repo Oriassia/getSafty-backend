@@ -171,6 +171,37 @@ export async function deleteRoom(
   }
 }
 
+export async function getFavoritesByUser(
+  req: CustomRequest,
+  res: Response
+): Promise<void> {
+  const { userId } = req.params;
+
+  try {
+    if (!userId) {
+      res.status(400).json({ error: "User ID is required" });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (user?.favorites.length === 0) {
+      res.status(404).json({ message: "No favourites found for this user" });
+      return;
+    }
+    let favRooms: any = [];
+    user?.favorites.forEach(async (favId) => {
+      const room = await SafeRoom.findById(favId);
+      if (room) {
+        favRooms.push(room);
+      }
+    });
+    res.status(200).json({ favRooms });
+  } catch (error) {
+    console.error("Error fetching user rooms:", error);
+    res.status(500).json({ error: "Failed to fetch user rooms" });
+  }
+}
+
 export async function addToFavorites(
   req: CustomRequest,
   res: Response
