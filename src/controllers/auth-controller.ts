@@ -84,6 +84,24 @@ export async function login(req: Request, res: Response): Promise<void> {
 }
 
 
+// export async function getUserById(req: Request, res: Response): Promise<void> {
+//     const { id } = req.params;
+
+//     try {
+//         const user = await User.findById(id) as IUser;
+//         if (!user) {
+//             res.status(404).json({ error: 'User not found' });
+//             return;
+//         }
+
+//         const { password, ...userWithoutPassword } = user.toObject();
+//         res.status(200).json({ user: userWithoutPassword });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ error: 'Failed to fetch user' });
+//     }
+// }
+
 export async function getUserById(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
 
@@ -95,9 +113,10 @@ export async function getUserById(req: Request, res: Response): Promise<void> {
         }
 
         const { password, ...userWithoutPassword } = user.toObject();
+
         res.status(200).json({ user: userWithoutPassword });
     } catch (error) {
-        console.log(error);
+        console.error('Error fetching user by ID:', error);
         res.status(500).json({ error: 'Failed to fetch user' });
     }
 }
