@@ -12,4 +12,4 @@ export const authRoutes = Router();
 authRoutes.post("/register", register);
 authRoutes.post("/login", login);
 
-authRoutes.get("/", getUserById);
+authRoutes.get("/:id", getUserById);
