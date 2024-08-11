@@ -4,7 +4,9 @@ import {
     getRoomById,
     addRoom,
     updateRoom,
-    deleteRoom
+    deleteRoom,
+    addToFavorites,
+    removeFromFavorites
 } from "../controllers/rooms-controller";
 import { verifyToken } from "../middleware/auth-middleware";
 
@@ -18,3 +20,6 @@ roomsRoutes.get("/:id", getRoomById);
 roomsRoutes.post("/", verifyToken, addRoom);
 roomsRoutes.patch("/:id", verifyToken, updateRoom);
 roomsRoutes.delete("/:id", verifyToken, deleteRoom);
+
+roomsRoutes.post("/favorite/:roomId", verifyToken, addToFavorites);
+roomsRoutes.delete("/favorite/:roomId", verifyToken, removeFromFavorites);
