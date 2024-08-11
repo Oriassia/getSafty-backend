@@ -123,11 +123,11 @@
 
 // seed();
 
-import mongoose, { Types } from 'mongoose';
-import axios from 'axios';
-import User from './src/models/user-model'; // Adjust the import path according to your project structure
-import SafeRoom from './src/models/room-model'; // Adjust the import path according to your project structure
-import { connectDB } from './src/config/db'; // Adjust the import path according to your project structure
+import mongoose, { Types } from "mongoose";
+import axios from "axios";
+import User from "./src/models/user-model"; // Adjust the import path according to your project structure
+import SafeRoom from "./src/models/room-model"; // Adjust the import path according to your project structure
+import { connectDB } from "./src/config/db"; // Adjust the import path according to your project structure
 
 const API_KEY = 'AIzaSyDwY1nKLe_qB7XyA6_8uBsBkOG_uNdtxgg'; // Replace with your Google API key
 const BASE_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
@@ -154,8 +154,11 @@ async function getAllBombShelters() {
         const data = await fetchPlaces(nextPageToken);
         results = results.concat(data.results);
         nextPageToken = data.next_page_token;
-        console.log(`Fetched ${data.results.length} shelters, nextPageToken: ${nextPageToken}`);
-        if (nextPageToken) await new Promise(resolve => setTimeout(resolve, 2000)); // Delay to avoid API rate limits
+        console.log(
+            `Fetched ${data.results.length} shelters, nextPageToken: ${nextPageToken}`
+        );
+        if (nextPageToken)
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // Delay to avoid API rate limits
     } while (nextPageToken);
 
     return results;
@@ -168,7 +171,7 @@ async function seed() {
         // Clear existing data
         await User.deleteMany({});
         await SafeRoom.deleteMany({});
-        console.log('Cleared existing users and safe rooms');
+        console.log("Cleared existing users and safe rooms");
 
         // Fetch bomb shelters data from the Google Places API
         const bombShelters = await getAllBombShelters();
@@ -183,46 +186,65 @@ async function seed() {
 
 
         // Extract unique cities from the bomb shelter data, filtering out undefined or invalid entries
-        const cities = [...new Set(bombShelters.map((shelter: any) => {
-            const city = shelter.plus_code?.compound_code?.split(', ')[1] || shelter.formatted_address?.split(', ')[1] || "Unknown City";
-            return city;
-        }).filter(Boolean))];
+        const cities = [
+            ...new Set(
+                bombShelters
+                    .map((shelter: any) => {
+                        const city =
+                            shelter.plus_code?.compound_code?.split(", ")[1] ||
+                            shelter.formatted_address?.split(", ")[1] ||
+                            "Unknown City";
+                        return city;
+                    })
+                    .filter(Boolean)
+            ),
+        ];
 
-        console.log(`Cities identified: ${cities.join(', ')}`);
+        console.log(`Cities identified: ${cities.join(", ")}`);
 
         // Create a user for each city
-        const cityUsers = await Promise.all(cities.map(async (city) => {
-            const cityUser = new User({
-                email: `${city.toLowerCase().replace(/\s/g, '')}@municipality.com`,
-                password: 'securepassword123', // Remember to hash passwords in production
-                firstName: city,
-                lastName: 'Municipality',
-                phoneNumber: '+972-50-000-0000',
-                profilePicture: `path/to/${city.toLowerCase().replace(/\s/g, '')}.jpg`,
-            });
-            return cityUser.save();
-        }));
+        const cityUsers = await Promise.all(
+            cities.map(async (city) => {
+                const cityUser = new User({
+                    email: `${city.toLowerCase().replace(/\s/g, "")}@municipality.com`,
+                    password: "securepassword123", // Remember to hash passwords in production
+                    firstName: city,
+                    lastName: "Municipality",
+                    phoneNumber: "+972-50-000-0000",
+                    profilePicture: `path/to/${city
+                        .toLowerCase()
+                        .replace(/\s/g, "")}.jpg`,
+                });
+                return cityUser.save();
+            })
+        );
 
         // Create a map of city names to ObjectIds
-        const cityUserMap = cityUsers.reduce<Record<string, Types.ObjectId>>((map, user) => {
-            map[user.firstName] = user._id as Types.ObjectId;
-            return map;
-        }, {});
+        const cityUserMap = cityUsers.reduce<Record<string, Types.ObjectId>>(
+            (map, user) => {
+                map[user.firstName] = user._id as Types.ObjectId;
+                return map;
+            },
+            {}
+        );
 
-        console.log('City users created:', cityUserMap);
+        console.log("City users created:", cityUserMap);
 
         // Create SafeRooms based on bomb shelter data and city associations
         const safeRooms = await SafeRoom.insertMany(
             bombShelters.map((shelter: any, index: number) => {
-                const city = shelter.plus_code?.compound_code?.split(', ')[1] || shelter.formatted_address?.split(', ')[1] || "Unknown City";
+                const city =
+                    shelter.plus_code?.compound_code?.split(", ")[1] ||
+                    shelter.formatted_address?.split(", ")[1] ||
+                    "Unknown City";
                 return {
                     title: shelter.name || `Bomb Shelter at ${shelter.formatted_address}`,
                     address: {
                         city: city,
-                        street: shelter.formatted_address.split(', ')[0] || 'Unknown',
-                        number: 'N/A',
-                        floor: index % 4 === 0 ? '1' : 'B',
-                        apartment: index % 4 === 0 ? '3' : '2',
+                        street: shelter.formatted_address.split(", ")[0] || "Unknown",
+                        number: "N/A",
+                        floor: index % 4 === 0 ? "1" : "B",
+                        apartment: index % 4 === 0 ? "3" : "2",
                     },
                     location: {
                         lng: shelter.geometry.location.lng,
@@ -230,7 +252,7 @@ async function seed() {
                     },
                     images: [`path/to/image${index + 1}.jpg`],
                     capacity: Math.floor(Math.random() * 30) + 10, // Random capacity between 10 and 40
-                    ownerId: cityUserMap[city] || cityUserMap['Tel Aviv'], // Default to Tel Aviv if city not found
+                    ownerId: cityUserMap[city] || cityUserMap["Tel Aviv"], // Default to Tel Aviv if city not found
                     description: `Bomb shelter located at ${shelter.formatted_address} in ${city}.`,
                     available: Math.random() > 0.2, // 80% chance of being available
                     accessible: Math.random() > 0.5, // 50% chance of being accessible
@@ -241,10 +263,12 @@ async function seed() {
 
         console.log(`Inserted ${safeRooms.length} safe rooms into the database`);
 
-        console.log('Database seeded successfully with bomb shelters across Israel');
+        console.log(
+            "Database seeded successfully with bomb shelters across Israel"
+        );
         process.exit(0);
     } catch (error) {
-        console.error('Error seeding database:', error);
+        console.error("Error seeding database:", error);
         process.exit(1);
     }
 }
