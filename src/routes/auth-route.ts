@@ -1,9 +1,12 @@
 import { Router } from "express";
-// import {
+import {
+    register,
+    login
 
-// } from "../controllers/auth-controller";
+} from "../controllers/auth-controller";
 
 export const authRoutes = Router();
 
 // Public routes
-// employeesRoute.get("/", getAllEmployees);
+authRoutes.post("/register", register);
+authRoutes.post("/login", login);
