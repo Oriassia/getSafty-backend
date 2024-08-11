@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../models/user-model'; // Adjust the import path according to your project structure
-import { IUser } from '../models/user-model'; // Assuming you have an IUser interface for the User model
+import User from '../models/user-model';
+import { IUser } from '../models/user-model';
 
 const { JWT_SECRET } = process.env;
 
-const SALT_ROUNDS = 10; // Number of rounds to generate salt. 10 is recommended value
+const SALT_ROUNDS = 10;
 
 export async function register(req: Request, res: Response): Promise<void> {
     console.log('register');
@@ -82,25 +82,6 @@ export async function login(req: Request, res: Response): Promise<void> {
         res.status(500).json({ error: 'Login failed' });
     }
 }
-
-
-// export async function getUserById(req: Request, res: Response): Promise<void> {
-//     const { id } = req.params;
-
-//     try {
-//         const user = await User.findById(id) as IUser;
-//         if (!user) {
-//             res.status(404).json({ error: 'User not found' });
-//             return;
-//         }
-
-//         const { password, ...userWithoutPassword } = user.toObject();
-//         res.status(200).json({ user: userWithoutPassword });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: 'Failed to fetch user' });
-//     }
-// }
 
 export async function getUserById(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
