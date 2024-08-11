@@ -2,6 +2,7 @@ import express, { Request, Response, Express } from 'express';
 import cors from "cors";
 import { connectDB } from "./config/db";
 import { authRoutes } from './routes/auth-route';
+import { roomsRoutes } from './routes/rooms-route';
 
 const app: Express = express();
 const PORT = 3000;
@@ -16,6 +17,7 @@ async function main() {
 
     // Routes
     app.use("/api/auth", authRoutes);
+    app.use("/api/room", roomsRoutes);
 
 
     app.listen(PORT, () => {
