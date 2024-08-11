@@ -1,6 +1,8 @@
 import { Schema, model, Document } from 'mongoose';
 
 interface ISafeRoom extends Document {
+
+    title: string;
     address: {
         city: string;
         street: string;
@@ -22,6 +24,11 @@ interface ISafeRoom extends Document {
 }
 
 const safeRoomSchema = new Schema<ISafeRoom>({
+    title: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     address: {
         city: {
             type: String,
