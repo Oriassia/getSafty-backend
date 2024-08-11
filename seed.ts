@@ -131,7 +131,7 @@ import { connectDB } from './src/config/db'; // Adjust the import path according
 
 const API_KEY = 'AIzaSyDwY1nKLe_qB7XyA6_8uBsBkOG_uNdtxgg'; // Replace with your Google API key
 const BASE_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
-const QUERY = 'bomb shelter in Israel';
+const QUERY = 'bomb shelter';
 
 async function fetchPlaces(nextPageToken?: string) {
     const params: any = {
@@ -178,6 +178,9 @@ async function seed() {
             console.log('No bomb shelters found, skipping seeding process');
             process.exit(0);
         }
+
+        console.log("bombShelters", bombShelters);
+
 
         // Extract unique cities from the bomb shelter data, filtering out undefined or invalid entries
         const cities = [...new Set(bombShelters.map((shelter: any) => {
