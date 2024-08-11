@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import SafeRoom from '../models/room-model';
+import User from '../models/user-model';
+import mongoose, { Types } from 'mongoose';
 
 export interface CustomRequest extends Request {
     userId?: string;
@@ -128,5 +130,81 @@ export async function deleteRoom(req: CustomRequest, res: Response): Promise<voi
     } catch (error) {
         console.error('Error deleting room:', error);
         res.status(500).json({ error: 'Failed to delete room' });
+    }
+}
+
+export async function addToFavorites(req: CustomRequest, res: Response): Promise<void> {
+    const { roomId } = req.params;
+    const userId = req.userId;
+
+    try {
+
+        if (!mongoose.Types.ObjectId.isValid(roomId)) {
+            res.status(400).json({ error: 'Invalid room ID' });
+            return;
+        }
+
+        const roomObjectId = new mongoose.Types.ObjectId(roomId);
+
+        const room = await SafeRoom.findById(roomObjectId);
+        if (!room) {
+            res.status(404).json({ error: 'Room not found' });
+            return;
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        const roomObjectIdStr = roomObjectId.toString();
+        if (user.favorites.some(favorite => favorite.toString() === roomObjectIdStr)) {
+            res.status(400).json({ error: 'Room is already in favorites' });
+            return;
+        }
+
+        user.favorites.push(roomObjectId as any); // Use 'as any' if necessary to bypass strict type checking
+        await user.save();
+
+        res.status(200).json({ message: 'Room added to favorites successfully' });
+    } catch (error) {
+        console.error('Error adding room to favorites:', error);
+        res.status(500).json({ error: 'Failed to add room to favorites' });
+    }
+}
+
+export async function removeFromFavorites(req: CustomRequest, res: Response): Promise<void> {
+    const { roomId } = req.params;
+    const userId = req.userId;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(roomId)) {
+            res.status(400).json({ error: 'Invalid room ID' });
+            return;
+        }
+
+        const roomObjectId = new mongoose.Types.ObjectId(roomId);
+
+
+        const user = await User.findById(userId);
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        const roomIndex = user.favorites.findIndex(favorite => favorite.toString() === roomObjectId.toString());
+        if (roomIndex === -1) {
+            res.status(400).json({ error: 'Room is not in favorites' });
+            return;
+        }
+
+        user.favorites.splice(roomIndex, 1);
+        await user.save();
+
+        res.status(200).json({ message: 'Room removed from favorites successfully' });
+    } catch (error) {
+        console.error('Error removing room from favorites:', error);
+        res.status(500).json({ error: 'Failed to remove room from favorites' });
     }
 }
