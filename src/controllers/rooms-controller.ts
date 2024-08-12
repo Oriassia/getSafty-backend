@@ -184,17 +184,19 @@ export async function getFavoritesByUser(
     }
 
     const user = await User.findById(userId);
-    if (user?.favorites.length === 0) {
-      res.status(404).json({ message: "No favourites found for this user" });
-      return;
-    }
-    let favRooms: any = [];
-    user?.favorites.forEach(async (favId) => {
-      const room = await SafeRoom.findById(favId);
-      if (room) {
-        favRooms.push(room);
+
+    let favRooms: any[] = [];
+    if (user) {
+      for (const favId of user.favorites) {
+        const room = await SafeRoom.findById(favId.toString());
+        if (room) {
+          favRooms.push(room);
+        }
       }
-    });
+    }
+
+    console.log("favrooms: ", favRooms);
+
     res.status(200).json({ favRooms });
   } catch (error) {
     console.error("Error fetching user rooms:", error);
@@ -240,7 +242,7 @@ export async function addToFavorites(
     user.favorites.push(roomObjectId as any); // Use 'as any' if necessary to bypass strict type checking
     await user.save();
 
-    res.status(200).json({ message: "Room added to favorites successfully" });
+    res.status(200).json({ state: true });
   } catch (error) {
     console.error("Error adding room to favorites:", error);
     res.status(500).json({ error: "Failed to add room to favorites" });
@@ -279,12 +281,65 @@ export async function removeFromFavorites(
     user.favorites.splice(roomIndex, 1);
     await user.save();
 
-    res
-      .status(200)
-      .json({ message: "Room removed from favorites successfully" });
+    res.status(200).json({
+      state: false,
+    });
   } catch (error) {
     console.error("Error removing room from favorites:", error);
     res.status(500).json({ error: "Failed to remove room from favorites" });
+  }
+}
+export async function toggleFavorite(
+  req: CustomRequest,
+  res: Response
+): Promise<void> {
+  const { roomId } = req.params;
+  const userId = req.userId;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(roomId)) {
+      res.status(400).json({ error: "Invalid room ID" });
+      return;
+    }
+
+    const roomObjectId = new mongoose.Types.ObjectId(roomId);
+
+    const room = await SafeRoom.findById(roomObjectId);
+    if (!room) {
+      res.status(404).json({ error: "Room not found" });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    const roomIndex = user.favorites.findIndex(
+      (favorite) => favorite.toString() === roomObjectId.toString()
+    );
+
+    if (roomIndex === -1) {
+      // Room is not in favorites, so add it
+      user.favorites.push(roomObjectId as any); // Cast to `any` or to `mongoose.Schema.Types.ObjectId` if necessary
+      await user.save();
+      res.status(200).json({
+        message: "Room added to favorites successfully",
+        state: true,
+      });
+    } else {
+      // Room is already in favorites, so remove it
+      user.favorites.splice(roomIndex, 1);
+      await user.save();
+      res.status(200).json({
+        message: "Room removed from favorites successfully",
+        state: false,
+      });
+    }
+  } catch (error) {
+    console.error("Error toggling favorite status:", error);
+    res.status(500).json({ error: "Failed to toggle favorite status" });
   }
 }
 

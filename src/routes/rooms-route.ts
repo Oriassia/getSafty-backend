@@ -9,6 +9,7 @@ import {
   removeFromFavorites,
   getUserRooms,
   getFavoritesByUser,
+  toggleFavorite,
 } from "../controllers/rooms-controller";
 import { verifyToken } from "../middleware/auth-middleware";
 
@@ -26,3 +27,4 @@ roomsRoutes.get("/user/:userId", verifyToken, getUserRooms);
 roomsRoutes.get("/user/fav/:userId", getFavoritesByUser);
 roomsRoutes.post("/favorite/:roomId", verifyToken, addToFavorites);
 roomsRoutes.delete("/favorite/:roomId", verifyToken, removeFromFavorites);
+roomsRoutes.patch("/favorite/:roomId", verifyToken, toggleFavorite);
