@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user-model";
 import { IUser } from "../models/user-model";
+import { Server } from "http";
 
 const { JWT_SECRET } = process.env;
 
@@ -89,7 +90,9 @@ export async function login(req: Request, res: Response): Promise<void> {
     res.status(500).json({ error: "Login failed" });
   }
 }
-
+export interface CustomRequest extends Request {
+  io?: Server;
+}
 export async function getUserById(req: Request, res: Response): Promise<void> {
   const { id } = req.params;
 
