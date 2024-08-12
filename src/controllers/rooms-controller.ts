@@ -13,7 +13,6 @@ export async function getAllRooms(req: Request, res: Response): Promise<void> {
     const { accessible, open, radius, lat, lng, isPublic } = req.query;
 
     let query: any = {};
-    console.log(req.query);
 
     // Filtering by accessibility, availability, and public status
     if (accessible === "true") {
@@ -186,7 +185,7 @@ export async function getFavoritesByUser(
 
     const user = await User.findById(userId);
     if (user?.favorites.length === 0) {
-      res.status(404).json({ message: "No favourites found for this user" });
+      res.status(200).json({ favRooms: [] });
       return;
     }
     let favRooms: any = [];
@@ -301,7 +300,7 @@ export async function getUserRooms(req: Request, res: Response): Promise<void> {
     const userRooms = await SafeRoom.find({ ownerId: userId });
 
     if (userRooms.length === 0) {
-      res.status(404).json({ message: "No rooms found for this user" });
+      res.status(200).json({ userRooms: [] });
       return;
     }
 
@@ -344,6 +343,8 @@ export async function getNearestZone(
   const { lat, lng } = req.query;
 
   if (!lat || !lng) {
+    console.log("Latitude and Longitude are required");
+
     res.status(400).json({ message: "Latitude and Longitude are required" });
     return;
   }
@@ -352,6 +353,8 @@ export async function getNearestZone(
     const zones = await Zone.find();
 
     if (zones.length === 0) {
+      console.log("No zones found");
+
       res.status(404).json({ message: "No zones found" });
       return;
     }
@@ -376,6 +379,8 @@ export async function getNearestZone(
     if (nearestZone) {
       res.json(nearestZone); // Return the nearest zone
     } else {
+      console.log("No nearby zones found");
+
       res.status(404).json({ message: "No nearby zones found" });
     }
   } catch (error) {
