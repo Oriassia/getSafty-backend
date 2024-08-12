@@ -184,17 +184,19 @@ export async function getFavoritesByUser(
     }
 
     const user = await User.findById(userId);
-    if (user?.favorites.length === 0) {
-      res.status(200).json({ favRooms: [] });
-      return;
-    }
-    let favRooms: any = [];
-    user?.favorites.forEach(async (favId) => {
-      const room = await SafeRoom.findById(favId);
-      if (room) {
-        favRooms.push(room);
+    let favRooms: any[] = [];
+
+    if (user) {
+      for (const favId of user.favorites) {
+        const room = await SafeRoom.findById(favId);
+        if (room) {
+          favRooms.push(room);
+        }
       }
-    });
+    }
+
+    console.log(favRooms);
+
     res.status(200).json({ favRooms });
   } catch (error) {
     console.error("Error fetching user rooms:", error);
