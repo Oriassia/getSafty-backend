@@ -9,7 +9,6 @@ const { JWT_SECRET } = process.env;
 const SALT_ROUNDS = 10;
 
 export async function register(req: Request, res: Response): Promise<void> {
-  console.log("register");
   try {
     const { password, firstName, lastName, email, phoneNumber } = req.body;
 
@@ -50,13 +49,11 @@ export async function register(req: Request, res: Response): Promise<void> {
     }
     if (error.code === 11000) {
       const field = Object.keys(error.keyPattern)[0];
-      res
-        .status(400)
-        .json({
-          error: `${
-            field.charAt(0).toUpperCase() + field.slice(1)
-          } already exists`,
-        });
+      res.status(400).json({
+        error: `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } already exists`,
+      });
       return;
     }
 
@@ -86,7 +83,6 @@ export async function login(req: Request, res: Response): Promise<void> {
       expiresIn: "1h",
     });
 
-    console.log(token);
     res.status(200).json({ token });
   } catch (error) {
     console.log(error);
@@ -96,7 +92,6 @@ export async function login(req: Request, res: Response): Promise<void> {
 
 export async function getUserById(req: Request, res: Response): Promise<void> {
   const { id } = req.params;
-  console.log(id);
 
   try {
     const user = (await User.findById(id)) as IUser;
