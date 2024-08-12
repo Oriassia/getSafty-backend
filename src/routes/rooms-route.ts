@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-
   getAllRooms,
   getRoomById,
   addRoom,
@@ -11,14 +10,14 @@ import {
   getUserRooms,
   getFavoritesByUser,
   getNearestZone,
-
+  toggleFavorite,
 } from "../controllers/rooms-controller";
 import { verifyToken } from "../middleware/auth-middleware";
 
 export const roomsRoutes = Router();
 
 // Route to get the nearest zone based on location
-roomsRoutes.get("/zones/nearest", getNearestZone);  // Added this line
+roomsRoutes.get("/zones/nearest", getNearestZone); // Added this line
 
 // Public routes
 roomsRoutes.get("/", getAllRooms);
@@ -32,3 +31,4 @@ roomsRoutes.get("/user/:userId", verifyToken, getUserRooms);
 roomsRoutes.get("/user/fav/:userId", getFavoritesByUser);
 roomsRoutes.post("/favorite/:roomId", verifyToken, addToFavorites);
 roomsRoutes.delete("/favorite/:roomId", verifyToken, removeFromFavorites);
+roomsRoutes.patch("/favorite/:roomId", verifyToken, toggleFavorite);
