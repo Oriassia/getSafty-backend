@@ -269,7 +269,7 @@ export async function getUserRooms(req: Request, res: Response): Promise<void> {
         const userRooms = await SafeRoom.find({ ownerId: userId });
 
         if (userRooms.length === 0) {
-            res.status(404).json({ message: "No rooms found for this user" });
+            res.status(200).json({ rooms: userRooms });
             return;
         }
 
@@ -280,3 +280,66 @@ export async function getUserRooms(req: Request, res: Response): Promise<void> {
     }
 }
 
+import Zone from "../models/zone-model";
+
+// Haversine formula to calculate the distance between two geographic coordinates
+function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const toRadians = (degree: number) => (degree * Math.PI) / 180;
+    const R = 6371; // Earth's radius in kilometers
+
+    const dLat = toRadians(lat2 - lat1);
+    const dLng = toRadians(lng2 - lng1);
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Distance in kilometers
+}
+
+export async function getNearestZone(req: Request, res: Response): Promise<void> {
+    const { lat, lng } = req.query;
+
+    if (!lat || !lng) {
+        res.status(400).json({ message: 'Latitude and Longitude are required' });
+        return;
+    }
+
+    try {
+        const zones = await Zone.find();
+
+        if (zones.length === 0) {
+            res.status(404).json({ message: 'No zones found' });
+            return;
+        }
+
+        let nearestZone = null;
+        let minDistance = Infinity;
+
+        zones.forEach((zone) => {
+            const distance = calculateDistance(
+                parseFloat(lat as string),
+                parseFloat(lng as string),
+                zone.location.lat,
+                zone.location.lng
+            );
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestZone = zone;
+            }
+        });
+
+        if (nearestZone) {
+            res.json(nearestZone); // Return the nearest zone
+        } else {
+            res.status(404).json({ message: 'No nearby zones found' });
+        }
+    } catch (error) {
+        console.error('Error fetching nearest zone:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}

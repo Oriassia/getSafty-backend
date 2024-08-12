@@ -7,11 +7,15 @@ import {
     deleteRoom,
     addToFavorites,
     removeFromFavorites,
-    getUserRooms
+    getUserRooms,
+    getNearestZone
 } from "../controllers/rooms-controller";
 import { verifyToken } from "../middleware/auth-middleware";
 
 export const roomsRoutes = Router();
+
+// Route to get the nearest zone based on location
+roomsRoutes.get("/zones/nearest", getNearestZone);  // Added this line
 
 // Public routes
 roomsRoutes.get("/", getAllRooms);
