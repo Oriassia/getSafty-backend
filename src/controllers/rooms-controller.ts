@@ -11,10 +11,7 @@ export interface CustomRequest extends Request {
 export async function getAllRooms(req: Request, res: Response): Promise<void> {
   try {
     const { accessible, open, radius, lat, lng, isPublic } = req.query;
-
     let query: any = {};
-    console.log(req.query);
-
     // Filtering by accessibility, availability, and public status
     if (accessible === "true") {
       query.accessible = true;

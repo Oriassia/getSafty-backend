@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user-model";
 import { IUser } from "../models/user-model";
 import { Server } from "http";
+import { error } from "console";
 
 const { JWT_SECRET } = process.env;
 
@@ -70,12 +71,15 @@ export async function login(req: Request, res: Response): Promise<void> {
 
     const user = (await User.findOne({ email })) as IUser;
     if (!user) {
+      console.log("cant find email");
+
       res.status(401).json({ error: "Authentication failed" });
       return;
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
+      console.log("error2");
       res.status(401).json({ error: "Authentication failed" });
       return;
     }

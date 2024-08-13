@@ -7,12 +7,13 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import socketMiddleware from "./middleware/redAlert-middleware";
 import { poll } from "./controllers/red-alert-controller";
+import { alertRoute } from "./routes/red-alert-route";
 const app: Express = express();
 const PORT = 3000;
 const server = http.createServer(app);
 
 export const io = new Server(server, {
-  cors: { origin: "*", methods: ["GER", "POST", "PATCH"] },
+  cors: { origin: "*", methods: ["GET", "POST", "PATCH", "DELETE", "PUT"] },
 });
 async function main() {
   // Connect to database
@@ -30,7 +31,8 @@ async function main() {
   });
   // Routes
   app.use("/api/auth", authRoutes);
-  app.use("/api/room", poll, roomsRoutes);
+  app.use("/api/room", roomsRoutes);
+  app.use("/api/alert", alertRoute);
 
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
