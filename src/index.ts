@@ -17,7 +17,7 @@ const PORT = 3000;
 // });
 async function main() {
   // Connect to database
-  // await connectDB();
+  connectDB();
 
   // Middleware
   app.use(express.json());
