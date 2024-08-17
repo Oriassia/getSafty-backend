@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { io } from "..";
+// import { io } from "..";
 import { NextFunction } from "express";
 import { CustomRequest } from "./auth-controller";
 
@@ -16,7 +16,7 @@ export var poll = function () {
     if (alert.type != "none") {
       console.log("Currently active alert:");
       console.log(alert);
-      io.emit("alert", alert);
+      // io.emit("alert", alert);
     }
   }, options);
 };
