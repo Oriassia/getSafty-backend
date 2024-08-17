@@ -21,7 +21,16 @@ async function main() {
 
   // Middleware
   app.use(express.json());
-  app.use(cors()); // Configure CORS properly for production
+
+  // Configure CORS properly for production
+  app.use(
+    cors({
+      origin: ["https://getSafty.vercel.app"], //Frontend link
+      methods: ["POST", "GET", "UPDATE", "DELETE"],
+      credentials: true,
+    })
+  );
+
   app.use(socketMiddleware(io));
   io.on("connection", (socket: Socket) => {
     console.log("connection", socket.id);
@@ -33,6 +42,9 @@ async function main() {
   app.use("/api/auth", authRoutes);
   app.use("/api/room", roomsRoutes);
   app.use("/api/alert", alertRoute);
+
+  // displaied if connected successfuly
+  app.get("/", (req, res) => res.json("Express on Vercel"));
 
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
