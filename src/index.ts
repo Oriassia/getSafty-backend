@@ -14,7 +14,7 @@ const app: Express = express();
 // Configure CORS properly for production
 app.use(
   cors({
-    origin: ["https://getSafty.vercel.app"], //Frontend link
+    origin: ["https://get-safety.vercel.app"], //Frontend link
     methods: ["POST", "GET", "UPDATE", "DELETE"],
     credentials: true,
   })
