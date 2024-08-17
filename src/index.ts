@@ -1,4 +1,4 @@
-import express, { Request, Response, Express } from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from "./config/db";
 import { authRoutes } from "./routes/auth-route";
@@ -10,7 +10,7 @@ import { poll } from "./controllers/red-alert-controller";
 import { alertRoute } from "./routes/red-alert-route";
 const PORT = 3000;
 
-const app: Express = express();
+const app = express();
 // Configure CORS properly for production
 app.use(
   cors({
@@ -23,7 +23,7 @@ app.use(
 // Middleware
 app.use(express.json());
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
 // S O C K E T S
 
@@ -49,6 +49,6 @@ app.use("/api/alert", alertRoute);
 // displayed if connected successfuly
 app.get("/", (req, res) => res.json("Express on Vercel"));
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
