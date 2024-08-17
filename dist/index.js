@@ -8,19 +8,18 @@ const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./config/db");
 const auth_route_1 = require("./routes/auth-route");
 const rooms_route_1 = require("./routes/rooms-route");
-const http_1 = __importDefault(require("http"));
 const red_alert_route_1 = require("./routes/red-alert-route");
 const PORT = 3000;
 const app = (0, express_1.default)();
 // Configure CORS properly for production
 app.use((0, cors_1.default)({
-    origin: ["https://getSafty.vercel.app"], //Frontend link
+    origin: ["https://get-safety.vercel.app"], //Frontend link
     methods: ["POST", "GET", "UPDATE", "DELETE"],
     credentials: true,
 }));
 // Middleware
 app.use(express_1.default.json());
-const server = http_1.default.createServer(app);
+// const server = http.createServer(app);
 // S O C K E T S
 // export const io = new Server(server, {
 //   cors: { origin: "*", methods: ["GET", "POST", "PATCH", "DELETE", "PUT"] },
@@ -40,6 +39,6 @@ app.use("/api/room", rooms_route_1.roomsRoutes);
 app.use("/api/alert", red_alert_route_1.alertRoute);
 // displayed if connected successfuly
 app.get("/", (req, res) => res.json("Express on Vercel"));
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
