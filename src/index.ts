@@ -16,9 +16,6 @@ const PORT = 3000;
 //   cors: { origin: "*", methods: ["GET", "POST", "PATCH", "DELETE", "PUT"] },
 // });
 async function main() {
-  // Connect to database
-  connectDB();
-
   // Middleware
   app.use(express.json());
 
@@ -30,6 +27,9 @@ async function main() {
       credentials: true,
     })
   );
+
+  // Connect to database
+  connectDB();
 
   // app.use(socketMiddleware(io));
   // io.on("connection", (socket: Socket) => {
