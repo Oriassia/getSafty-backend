@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.poll = void 0;
-const __1 = require("..");
 var pikudHaoref = require("pikud-haoref-api");
 var interval = 5000;
 var poll = function () {
@@ -15,7 +14,7 @@ var poll = function () {
         if (alert.type != "none") {
             console.log("Currently active alert:");
             console.log(alert);
-            __1.io.emit("alert", alert);
+            // io.emit("alert", alert);
         }
     }, options);
 };
