@@ -10,11 +10,11 @@ import { poll } from "./controllers/red-alert-controller";
 import { alertRoute } from "./routes/red-alert-route";
 const app: Express = express();
 const PORT = 3000;
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
-// export const io = new Server(server, {
-//   cors: { origin: "*", methods: ["GET", "POST", "PATCH", "DELETE", "PUT"] },
-// });
+export const io = new Server(server, {
+  cors: { origin: "*", methods: ["GET", "POST", "PATCH", "DELETE", "PUT"] },
+});
 async function main() {
   // Middleware
   app.use(express.json());
@@ -31,13 +31,13 @@ async function main() {
   // Connect to database
   connectDB();
 
-  // app.use(socketMiddleware(io));
-  // io.on("connection", (socket: Socket) => {
-  //   console.log("connection", socket.id);
-  //   socket.on("disconnect", () => {
-  //     console.log("disconnect");
-  //   });
-  // });
+  app.use(socketMiddleware(io));
+  io.on("connection", (socket: Socket) => {
+    console.log("connection", socket.id);
+    socket.on("disconnect", () => {
+      console.log("disconnect");
+    });
+  });
 
   // Routes
   // app.use("/api/auth", authRoutes);
