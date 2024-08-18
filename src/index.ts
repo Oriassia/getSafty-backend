@@ -8,6 +8,7 @@ import http from "http";
 import socketMiddleware from "./middleware/redAlert-middleware";
 import { poll } from "./controllers/red-alert-controller";
 import { alertRoute } from "./routes/red-alert-route";
+import path from "path";
 const PORT = 3000;
 
 const app = express();
@@ -48,6 +49,11 @@ app.use("/api/alert", alertRoute);
 
 // displayed if connected successfuly
 app.get("/", (req, res) => res.json("Express on Vercel"));
+
+// Catch-all route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
