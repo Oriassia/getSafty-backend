@@ -9,6 +9,7 @@ const db_1 = require("./config/db");
 const auth_route_1 = require("./routes/auth-route");
 const rooms_route_1 = require("./routes/rooms-route");
 const red_alert_route_1 = require("./routes/red-alert-route");
+const path_1 = __importDefault(require("path"));
 const PORT = 3000;
 const app = (0, express_1.default)();
 // Configure CORS properly for production
@@ -39,6 +40,10 @@ app.use("/api/room", rooms_route_1.roomsRoutes);
 app.use("/api/alert", red_alert_route_1.alertRoute);
 // displayed if connected successfuly
 app.get("/", (req, res) => res.json("Express on Vercel"));
+// Catch-all route
+app.get("*", (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, "public", "index.html"));
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
