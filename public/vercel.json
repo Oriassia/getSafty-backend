@@ -1,12 +1,6 @@
 {
   "routes": [
     { "src": "/map", "dest": "/map", "status": 200 },
-    { "src": "/instructions", "dest": "/instructions", "status": 200 },
-    { "src": "/myProfile", "dest": "/myProfile", "status": 200 },
-    { "src": "/saved-shelters", "dest": "/saved-shelters", "status": 200 },
-    { "src": "/login", "dest": "/login", "status": 200 },
-    { "src": "/register", "dest": "/register", "status": 200 },
-    { "src": "/:id", "dest": "/:id", "status": 200 },
     { "src": "/[^.]+", "dest": "/", "status": 200 }
   ]
 }
