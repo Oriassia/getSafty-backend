@@ -3,19 +3,25 @@
 
 #### Deployed at: [Get Safety](https://get-safety.vercel.app/)
 
-**Get Safety** is a comprehensive full-stack web application tailored to aid individuals in finding shelters nearby. It's built using React for the front end, Express.js & Node.js for the backend, and MongoDB as the database.
+**Get Safety** is a full-stack web application designed for finding and managing shelters. Utilizing a mobile-first approach, it is optimized for ease of use on mobile devices. The app is built using React for the frontend, Express.js & Node.js for the backend, and MongoDB as the database.
 
 ## Technologies Used
 
 - **Frontend**: React
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
-- **Object-Document Mapping**: Mongoose
+- **Mapping**: Google Maps API
 - **Authentication and Authorization**: JWT (JSON Web Tokens)
+
+## Key Features
+
+- **User Registration**: New users can register and log in directly from the landing page. Once registered, the app remembers the user, streamlining future interactions.
+- **Shelter Management**: Logged-in users can add their own shelters and manage them, making them visible to all users.
+- **Real Data Integration**: Includes actual shelter data from "Pikud Haoref" and local government sources in Israel.
 
 ## Getting Started
 
-To set up the Get Safety app on your local environment, you'll need Node.js, npm, and MongoDB installed.
+Ensure you have Node.js, npm, and MongoDB installed to set up the Get Safety app on your local environment.
 
 ### Installation
 
@@ -37,7 +43,7 @@ To set up the Get Safety app on your local environment, you'll need Node.js, npm
 
 ## Contributing
 
-We welcome contributions to the Get Safety project. To contribute, fork the repository, create a new branch for your changes, and submit a pull request.
+Contributions to the Get Safety project are welcome. To contribute, fork the repository, create a new branch for your modifications, and submit a pull request.
 
 ## Deployed Application
 
