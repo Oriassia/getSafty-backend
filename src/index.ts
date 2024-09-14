@@ -12,17 +12,19 @@ import path from "path";
 const PORT = 3000;
 
 const app = express();
-// Configure CORS properly for production
-app.use(
-  cors({
-    origin: ["https://get-safety.vercel.app"], //Frontend link
-    methods: ["POST", "GET", "UPDATE", "DELETE"],
-    credentials: true,
-  })
-);
+
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "development"
+      ? process.env.DEVELOPMENT_ORIGIN
+      : process.env.CORS_ORIGIN,
+  methods: ["POST", "GET", "PUT", "DELETE"],
+  credentials: true,
+};
 
 // Middleware
 app.use(express.json());
+app.use(cors(corsOptions));
 
 // const server = http.createServer(app);
 
@@ -50,11 +52,11 @@ app.use("/api/alert", alertRoute);
 // displayed if connected successfuly
 app.get("/", (req, res) => res.json("Express on Vercel"));
 
-// Catch-all route
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
+// Only listen on a port when running locally
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+export default app;
