@@ -1,5 +1,9 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import dotenv from 'dotenv';
+// Load environment variables from .env file
+dotenv.config();
+
 import { connectDB } from "./config/db";
 import { authRoutes } from "./routes/auth-route";
 import { roomsRoutes } from "./routes/rooms-route";
