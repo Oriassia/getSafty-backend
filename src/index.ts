@@ -18,10 +18,10 @@ const PORT = 3000;
 const app = express();
 
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "development"
-      ? process.env.DEVELOPMENT_ORIGIN
-      : process.env.CORS_ORIGIN,
+  origin:"https://get-safety.vercel.app",
+    // process.env.NODE_ENV === "development"
+    //   ? process.env.DEV_ORIGIN
+    //   : [process.env.PROD_ORIGIN],
   methods: ["POST", "GET", "PUT", "DELETE"],
   credentials: true,
 };
